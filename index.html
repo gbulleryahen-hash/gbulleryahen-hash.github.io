@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COPO — FAO libre pour fraiseuses CNC</title>
+<meta name="description" content="COPO est un logiciel libre de FAO pour fraiseuses CNC : dessin, reliefs 3D, parcours d'outils et G-code, dans le navigateur, en ligne ou hors ligne.">
+<meta name="theme-color" content="#262626">
+<link rel="icon" type="image/svg+xml" href="logo-copo.svg">
+<link rel="apple-touch-icon" href="/copo/img/apple-touch-icon.png">
+<link rel="canonical" href="https://copo-cnc.fr/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="COPO — FAO libre pour fraiseuses CNC">
+<meta property="og:description" content="Dessin, reliefs 3D, parcours d'outils et G-code, dans le navigateur. Gratuit et open source.">
+<meta property="og:url" content="https://copo-cnc.fr/">
+<meta property="og:image" content="https://copo-cnc.fr/copo/img/fr-14-relief-3d.webp">
+<style>
+/* Polices servies depuis l'application (même domaine) : aucun appel à Google Fonts. */
+@font-face{font-family:"COPO Sans";font-weight:200 900;font-display:swap;src:url("/copo/lib/fonts/SourceSans3.ttf") format("truetype")}
+@font-face{font-family:"COPO Sans";font-style:italic;font-weight:200 900;font-display:swap;src:url("/copo/lib/fonts/SourceSans3-Italic.ttf") format("truetype")}
+@font-face{font-family:"COPO Cond";font-weight:700;font-display:swap;src:url("/copo/lib/fonts/BarlowCondensed-Bold.ttf") format("truetype")}
+@font-face{font-family:"COPO Cond";font-weight:600;font-display:swap;src:url("/copo/lib/fonts/BarlowCondensed-SemiBold.ttf") format("truetype")}
+
+/* Charte COPO : fond sombre, matière orange, parcours et liens bleus, cotes bleu clair, support gris. */
+:root{
+  --bg:#262626; --panel:#2e2e2e; --raised:#363636; --line:#444;
+  --ink:#ececec; --muted:#a8a8a8;
+  --accent:#4f7cff; --accent-hi:#6d93ff; --cote:#8fb2ff;
+  --matiere:#c46a2b; --matiere-hi:#e8833a; --support:#5d6168;
+  --f-ui:"COPO Sans","Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-cond:"COPO Cond","Barlow Condensed","Arial Narrow",sans-serif;
+  --w:1120px; --r:6px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--f-ui);-webkit-text-size-adjust:100%}
+img,svg{display:block;max-width:100%}
+a{color:var(--cote)}
+a:hover{color:#fff}
+:focus-visible{outline:2px solid var(--cote);outline-offset:3px;border-radius:3px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--f-cond);font-weight:700;line-height:1.08;margin:0;letter-spacing:.005em}
+h2{font-size:clamp(30px,4vw,42px)}
+h3{font-size:23px;font-weight:600}
+p{margin:0}
+
+/* ---------- Barre du haut ---------- */
+.top{position:sticky;top:0;z-index:10;background:rgb(38 38 38 / .92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font:700 24px/1 var(--f-cond);letter-spacing:.04em}
+.brand svg{width:32px;height:32px}
+.nav{display:flex;gap:4px;margin-left:auto;align-items:center}
+.nav a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:var(--r);font-weight:600;font-size:15.5px}
+.nav a:hover{color:var(--ink);background:var(--raised)}
+.nav .gh{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);color:var(--ink)}
+.nav .gh svg{width:17px;height:17px}
+.lang{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font:600 13px var(--f-ui);padding:5px 9px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:var(--r);color:var(--ink);width:40px;height:36px;cursor:pointer}
+.menu-btn svg{width:20px;height:20px;margin:auto}
+
+/* ---------- Accroche ---------- */
+.hero{text-align:center;padding:56px 0 0}
+.mark{width:min(460px,86vw);margin:0 auto 26px;overflow:visible}
+.mark .rail{fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round}
+.mark .tick{stroke:var(--accent);stroke-width:2.4;stroke-linecap:round}
+.mark .path{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.9;transition:opacity .5s}
+.mark .path.done{opacity:0}
+.mark .cut{fill:none;stroke:#fff;stroke-width:13;stroke-linecap:round;stroke-linejoin:round}
+.mark .tool{fill:var(--matiere-hi)}
+.mark .chip{fill:var(--matiere-hi)}
+.hero h1{font-size:clamp(40px,6.4vw,70px);max-width:15ch;margin:0 auto}
+.hero .lede{max-width:60ch;margin:20px auto 0;color:#cfcfcf;font-size:19px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:var(--r);font:600 17px var(--f-ui);text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn svg{width:20px;height:20px;flex:none}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hi);color:#fff}
+.btn-ghost{border-color:#5a5a5a;color:var(--ink);background:var(--panel)}
+.btn-ghost:hover{border-color:var(--cote);color:#fff}
+.meta{margin-top:14px;color:var(--muted);font-size:14.5px}
+.shot{margin:52px auto 0;max-width:1040px;position:relative}
+.shot img{width:100%;height:auto;border-radius:10px 10px 0 0;border:1px solid #4a4a4a;border-bottom:0;box-shadow:0 -1px 0 #555 inset,0 30px 80px -20px rgb(0 0 0 / .7)}
+.shot figcaption{position:absolute;left:0;right:0;bottom:-34px;font-size:14px;color:var(--muted)}
+
+/* Bande « matière » : le panneau de bois sur lequel tout repose */
+.slab{height:14px;background:linear-gradient(var(--matiere-hi),var(--matiere));border-top:1px solid #f0a060}
+
+/* ---------- Fonctions ---------- */
+section{padding:88px 0}
+.feat{background:var(--panel)}
+.feat h2{max-width:22ch}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);margin-top:44px;border-top:1px solid var(--line)}
+.grid4 article{padding:28px 24px 8px 0;margin-right:24px}
+.grid4 article + article{border-left:1px solid var(--line);padding-left:24px;margin-right:0}
+.ico{width:40px;height:40px;margin-bottom:18px}
+.ico .g{fill:none;stroke:#cfcfcf;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ico .b{fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ico .o{fill:var(--matiere);stroke:none}
+.grid4 h3{margin-bottom:10px}
+.grid4 p{color:#c4c4c4;font-size:16px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px}
+.duo figure{margin:0}
+.duo img{border-radius:var(--r);border:1px solid #4a4a4a;width:100%;height:auto}
+.duo figcaption{margin-top:10px;color:var(--muted);font-size:15px}
+
+/* ---------- Installer ---------- */
+.intro{max-width:62ch;margin-top:16px;color:#cfcfcf}
+.inst{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.inst > div{border:1px solid var(--line);border-radius:var(--r);padding:22px 20px;background:var(--bg)}
+.inst h3{font-size:21px;display:flex;align-items:center;gap:10px}
+.inst h3 svg{width:24px;height:24px;flex:none}
+.inst .who{color:var(--muted);font-size:14.5px;margin:6px 0 14px}
+.inst ol{margin:0;padding-left:20px;font-size:15.5px;color:#d6d6d6}
+.inst li + li{margin-top:6px}
+.inst .alt{background:none;border-style:dashed}
+.inst .alt .btn{margin-top:16px;padding:9px 14px;font-size:15px}
+kbd{font:600 13px var(--f-ui);background:var(--raised);border:1px solid #555;border-bottom-width:2px;border-radius:4px;padding:0 5px}
+
+/* ---------- Soutenir ---------- */
+.give{background:var(--panel)}
+.give .wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center}
+.give p + p{margin-top:14px}
+.give .txt p{color:#cfcfcf;max-width:56ch}
+.give h2{margin-bottom:18px}
+.sponsor{border:1px solid var(--line);border-radius:var(--r);padding:28px;background:var(--bg)}
+.sponsor .btn{width:100%;justify-content:center}
+.heart{color:#e5534b}
+.sponsor ul{margin:20px 0 0;padding:0;list-style:none;font-size:15.5px;color:#cfcfcf}
+.sponsor li{position:relative;padding-left:22px}
+.sponsor li + li{margin-top:8px}
+.sponsor li::before{content:"";position:absolute;left:0;top:.75em;width:12px;height:2px;background:var(--accent)}
+
+/* ---------- Pied de page ---------- */
+footer{border-top:1px solid var(--line);padding:40px 0 48px;font-size:15px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:28px 48px;justify-content:space-between}
+footer h4{margin:0 0 10px;font:600 15px var(--f-ui);color:var(--ink)}
+footer ul{list-style:none;margin:0;padding:0}
+footer li + li{margin-top:6px}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--ink);text-decoration:underline}
+.legal{flex-basis:100%;border-top:1px solid #383838;padding-top:20px;font-size:14px}
+
+/* ---------- Écrans étroits ---------- */
+@media (max-width:960px){
+  .grid4,.inst{grid-template-columns:1fr 1fr}
+  .grid4 article:nth-child(3){border-left:0;padding-left:0}
+  .grid4 article{border-bottom:1px solid var(--line);padding-bottom:22px}
+  .give .wrap{grid-template-columns:1fr;gap:32px}
+}
+@media (max-width:760px){
+  body{font-size:16.5px}
+  .menu-btn{display:block}
+  .nav{display:none;position:absolute;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px 16px}
+  .nav.open{display:flex}
+  .nav a{padding:10px 8px}
+  .lang{align-self:flex-start;margin-top:6px}
+  .hero{padding-top:36px}
+  section{padding:64px 0}
+  .grid4,.inst,.duo{grid-template-columns:1fr}
+  .grid4 article,.grid4 article + article{border-left:0;padding-left:0;margin-right:0}
+  .shot figcaption{position:static;margin-top:10px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="COPO, accueil">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#323232"/><g fill="none" stroke="#4f7cff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 24h12"/><path d="M15 24c4.5 0 8-2.4 8.8-6 .8-3.7-1.6-7-5.2-7-3 0-5.2 2.4-4.8 5.1.3 2.3 2.5 3.6 4.5 2.8 1.7-.7 2.3-2.6 1.4-4"/><path d="M24 24h5"/></g></svg>
+      COPO
+    </a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="/copo/" data-en="Web app">Application</a>
+      <a href="#installer" data-en="Install">Installer</a>
+      <a href="/copo/guide.html" data-en="User guide">Mode d'emploi</a>
+      <a href="#soutenir" data-en="Support">Soutenir</a>
+      <a class="gh" href="https://github.com/gbulleryahen-hash/copo">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+      <div class="lang" role="group" aria-label="Langue">
+        <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <!-- Logo animé : la fraise suit le parcours bleu et grave « COPO » en blanc (charte : lettres blanches, ligne bleue, fond sombre). -->
+      <svg class="mark" id="mark" viewBox="0 0 400 150" role="img" aria-label="COPO">
+        <line class="tick" x1="12" y1="126" x2="12" y2="136"/>
+        <line class="tick" x1="388" y1="126" x2="388" y2="136"/>
+        <path class="rail" id="rail" d="M12 131H388"/>
+        <g id="letters">
+          <path d="M96.3 41.7A40 40 0 1 0 96.3 98.3"/>
+          <path d="M168 30A40 40 0 1 0 168 110A40 40 0 1 0 168 30Z"/>
+          <path d="M236 110V30H262A22 22 0 0 1 262 74H236"/>
+          <path d="M340 30A40 40 0 1 0 340 110A40 40 0 1 0 340 30Z"/>
+        </g>
+        <circle class="tool" id="tool" r="5" cx="-20" cy="-20"/>
+      </svg>
+
+      <h1 data-en="Simple 2.5D and 3D CAM for everyone">La FAO 2,5D et 3D, simple, pour tous</h1>
+      <p class="lede" data-en="Free and open-source CAM software for CNC routers. Draw, import your heightmaps and STL models, generate your toolpaths and G-code, online or offline.">Logiciel de FAO libre et gratuit pour fraiseuses CNC. Dessinez, importez vos cartes de hauteur et vos modèles STL, générez vos parcours d'outils et votre G-code, en ligne ou hors ligne.</p>
+
+      <div class="cta">
+        <a class="btn btn-primary" href="/copo/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+          <span data-en="Launch COPO online">Lancer COPO en ligne</span>
+        </a>
+        <a class="btn btn-ghost" href="#installer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          <span data-en="Install on my computer">Installer sur mon ordinateur</span>
+        </a>
+      </div>
+      <p class="meta"><span data-en="Free · GPL v3 licence · French and English">Gratuit · Licence GPL v3 · Français et anglais</span><span id="ver"></span></p>
+
+      <figure class="shot">
+        <img src="/copo/img/fr-14-relief-3d.webp" data-src-en="/copo/img/en-14-relief-3d.webp" width="1800" height="1125"
+             alt="L'interface de COPO : onglet Relief avec un dôme, une extrusion et un lissage en vue 3D"
+             data-en-alt="COPO's interface: Relief tab with a dome, an extrusion and a sweep in 3D view">
+      </figure>
+    </div>
+  </div>
+  <div class="slab" aria-hidden="true"></div>
+
+  <section class="feat" id="fonctions">
+    <div class="wrap">
+      <h2 data-en="From drawing to G-code, in one program">Du dessin au G-code, dans un seul logiciel</h2>
+      <div class="grid4">
+        <article>
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="o" d="M3 17h18v3H3z"/><path class="b" d="M3 17c3 0 4-8 9-8s6 8 9 8"/><path class="g" d="M7 4l3 3M10 4L7 7"/></svg>
+          <h3 data-en="2.5D CAM and 3D reliefs">FAO 2,5D et reliefs 3D</h3>
+          <p data-en="Draw or import SVG, DXF, PDF and STL. Sculpt a relief, then cut profiles, pockets, V-carving, drilling and 3D finishing.">Dessinez ou importez SVG, DXF, PDF et STL. Modelez un relief, puis usinez profils, poches, V-carving, perçages et finitions 3D.</p>
+        </article>
+        <article>
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="g" d="M10 2h4v7l-2 3-2-3z"/><path class="o" d="M3 17h18v3H3z"/><path class="b" d="M4 14.5h3l2-2h6l2 2h3"/></svg>
+          <h3 data-en="G-code for your machine">Le G-code de votre machine</h3>
+          <p data-en="58 post-processors: GRBL, grblHAL, Mach3/4, LinuxCNC, UCCNC, MASSO… 3D simulation before cutting, rotary 4th axis.">58 post-processeurs : GRBL, grblHAL, Mach3/4, LinuxCNC, UCCNC, MASSO… Simulation 3D avant d'usiner, 4ᵉ axe rotatif.</p>
+        </article>
+        <article>
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect class="g" x="2.5" y="4" width="15" height="11" rx="1.5"/><path class="g" d="M7 19h6M10 15v4"/><rect class="b" x="15.5" y="9" width="6" height="11" rx="1.2"/></svg>
+          <h3 data-en="Web, Linux, Windows, Mac">Web, Linux, Windows, Mac</h3>
+          <p data-en="Runs in Chrome, Edge, Brave or Safari. Installs like a regular application and works without an internet connection.">Fonctionne dans Chrome, Edge, Brave ou Safari. S'installe comme une application et marche sans connexion.</p>
+        </article>
+        <article>
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="g" d="M3 7.5V18a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18V9a1.5 1.5 0 0 0-1.5-1.5H11L9 5H4.5A1.5 1.5 0 0 0 3 6.5z"/><path class="b" d="M8.5 13.5l2.5 2.5 4.5-5"/></svg>
+          <h3 data-en="Your data stays with you">Vos données restent chez vous</h3>
+          <p data-en="No account, nothing uploaded: everything is computed on your computer. Your projects are plain .copo files.">Ni compte, ni envoi : tout est calculé sur votre ordinateur. Vos projets sont de simples fichiers .copo.</p>
+        </article>
+      </div>
+
+      <div class="duo">
+        <figure>
+          <img src="/copo/img/fr-16-relief-usine.webp" data-src-en="/copo/img/en-16-relief-usine.webp" width="1800" height="1125" loading="lazy"
+               alt="Simulation de l'usinage d'un relief" data-en-alt="Simulation of a machined relief">
+          <figcaption data-en="Check the part in the simulation before starting the machine.">Vérifiez la pièce dans la simulation avant de lancer la machine.</figcaption>
+        </figure>
+        <figure>
+          <img src="/copo/img/fr-22-rotatif-simu.webp" data-src-en="/copo/img/en-22-rotatif-simu.webp" width="1800" height="1125" loading="lazy"
+               alt="Gravure de COPO sur un cylindre au 4ᵉ axe" data-en-alt="COPO engraved on a cylinder with the 4th axis">
+          <figcaption data-en="Rotary 4th axis: draw flat, COPO wraps it around the cylinder.">4ᵉ axe rotatif : dessinez à plat, COPO enroule sur le cylindre.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="installer">
+    <div class="wrap">
+      <h2 data-en="Install COPO">Installer COPO</h2>
+      <p class="intro" data-en="Nothing to download: open COPO once, then install it from your browser. It gets its own window and icon, opens your .copo files and keeps working offline.">Rien à télécharger : ouvrez COPO une fois, puis installez-le depuis votre navigateur. Il aura sa propre fenêtre et son icône, ouvrira vos fichiers .copo et fonctionnera hors ligne.</p>
+      <div class="inst">
+        <div>
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="#cfcfcf" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="19" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg><span data-en="Computer">Ordinateur</span></h3>
+          <p class="who" data-en="Chrome, Edge or Brave — Windows, Linux, macOS, Chromebook">Chrome, Edge ou Brave — Windows, Linux, macOS, Chromebook</p>
+          <ol>
+            <li><a href="/copo/" data-en="Open COPO">Ouvrez COPO</a>.</li>
+            <li data-en="Click the install icon at the right of the address bar.">Cliquez sur l'icône d'installation à droite de la barre d'adresse.</li>
+            <li data-en="Confirm with “Install”.">Confirmez par « Installer ».</li>
+          </ol>
+        </div>
+        <div>
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="#cfcfcf" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M11 18.5h2"/></svg>Android</h3>
+          <p class="who" data-en="Chrome">Chrome</p>
+          <ol>
+            <li><a href="/copo/" data-en="Open COPO">Ouvrez COPO</a>.</li>
+            <li data-en="Open the ⋮ menu.">Ouvrez le menu ⋮.</li>
+            <li data-en="Choose “Install app” or “Add to Home screen”.">Choisissez « Installer l'application » ou « Ajouter à l'écran d'accueil ».</li>
+          </ol>
+        </div>
+        <div>
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="#cfcfcf" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2"/><path d="M11 18.5h2"/></svg><span data-en="iPad, iPhone, Mac">iPad, iPhone, Mac</span></h3>
+          <p class="who">Safari</p>
+          <ol>
+            <li><a href="/copo/" data-en="Open COPO">Ouvrez COPO</a>.</li>
+            <li data-en="iPad and iPhone: Share button, then “Add to Home Screen”.">iPad et iPhone : bouton Partager, puis « Sur l'écran d'accueil ».</li>
+            <li data-en="Mac: File menu, then “Add to Dock”.">Mac : menu Fichier, puis « Ajouter au Dock ».</li>
+          </ol>
+        </div>
+        <div class="alt">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="#cfcfcf" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h11l5 5v11H4z"/><path d="M12 9v7M9 13l3 3 3-3"/></svg><span data-en="Local copy">Copie locale</span></h3>
+          <p class="who" data-en="For a workshop computer with no internet">Pour un ordinateur d'atelier sans internet</p>
+          <ol>
+            <li data-en="Download the ZIP and unzip it.">Téléchargez le ZIP et décompressez-le.</li>
+            <li data-en="Open index.html in your browser.">Ouvrez index.html dans le navigateur.</li>
+          </ol>
+          <a class="btn btn-ghost" href="https://github.com/gbulleryahen-hash/copo/archive/refs/heads/main.zip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+            <span data-en="Download the ZIP">Télécharger le ZIP</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="give" id="soutenir">
+    <div class="wrap">
+      <div class="txt">
+        <h2 data-en="Support the project">Soutenir le projet</h2>
+        <p data-en="COPO is free and open source, and will stay that way. It is developed by a luthier, for woodworking and instrument making, in his spare time.">COPO est gratuit et libre, et le restera. Il est développé par un luthier, pour le travail du bois et la lutherie, sur son temps libre.</p>
+        <p data-en="If COPO is useful in your workshop, you can help it grow with a one-time or monthly donation.">Si COPO vous rend service à l'atelier, vous pouvez l'aider à grandir par un don ponctuel ou mensuel.</p>
+      </div>
+      <div class="sponsor">
+        <a class="btn btn-primary" href="https://github.com/sponsors/gbulleryahen-hash">
+          <svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:#fff"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.6 3 5 6.5 5c2.1 0 3.7 1.2 5.5 3 1.8-1.8 3.4-3 5.5-3C21 5 23 8.6 21.6 11.8 19.5 16.4 12 21 12 21z"/></svg>
+          <span data-en="Sponsor on GitHub">Soutenir sur GitHub Sponsors</span>
+        </a>
+        <ul>
+          <li data-en="One-time or monthly, the amount you choose.">Ponctuel ou mensuel, du montant de votre choix.</li>
+          <li><span data-en="Other ways to help:">Autres façons d'aider :</span>&nbsp;<a href="https://github.com/gbulleryahen-hash/copo/issues" data-en="report a bug or suggest an idea">signaler un bug ou proposer une idée</a>.</li>
+          <li data-en="Share COPO with your woodworking friends.">Parlez de COPO autour de vous.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h4 data-en="Documentation">Documentation</h4>
+      <ul>
+        <li><a href="/copo/guide.html" data-en="Online user guide">Mode d'emploi en ligne</a></li>
+        <li><a href="/copo/COPO-mode-emploi-FR.pdf" data-en="French guide (PDF)">Mode d'emploi (PDF)</a></li>
+        <li><a href="/copo/COPO-user-guide-EN.pdf" data-en="User guide (PDF)">Guide en anglais (PDF)</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-en="Project">Projet</h4>
+      <ul>
+        <li><a href="https://github.com/gbulleryahen-hash/copo" data-en="Source code">Code source</a></li>
+        <li><a href="https://github.com/gbulleryahen-hash/copo/blob/main/LICENSE" data-en="GNU GPL v3 licence">Licence GNU GPL v3</a></li>
+        <li><a href="https://github.com/gbulleryahen-hash/copo/issues" data-en="Report a bug">Signaler un bug</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-en="Site">Site</h4>
+      <ul>
+        <li><a href="mentions-legales.html" data-en="Legal notice">Mentions légales</a></li>
+        <li><a href="#soutenir" data-en="Support COPO">Soutenir COPO</a></li>
+      </ul>
+    </div>
+    <p class="legal" data-en="Always check your G-code with a dry run before cutting. COPO comes with no warranty.">Vérifiez toujours le G-code par un passage à vide avant d'usiner. COPO est fourni sans garantie.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ----- Langue FR / EN (texte français dans la page, anglais dans data-en) ----- */
+  var nodes = document.querySelectorAll('[data-en]');
+  nodes.forEach(function(n){ n.dataset.fr = n.innerHTML; });
+  var imgs = document.querySelectorAll('img[data-src-en]');
+  imgs.forEach(function(i){ i.dataset.srcFr = i.getAttribute('src'); i.dataset.frAlt = i.alt; });
+  function setLang(l){
+    document.documentElement.lang = l;
+    nodes.forEach(function(n){ n.innerHTML = l === 'en' ? n.dataset.en : n.dataset.fr; });
+    imgs.forEach(function(i){ i.src = l === 'en' ? i.dataset.srcEn : i.dataset.srcFr; i.alt = l === 'en' ? i.dataset.enAlt : i.dataset.frAlt; });
+    document.querySelectorAll('.lang button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.lang === l); });
+    document.title = l === 'en' ? 'COPO — free CAM for CNC routers' : 'COPO — FAO libre pour fraiseuses CNC';
+    showVer();
+    try { localStorage.setItem('copo.siteLang', l); } catch(e){}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('copo.siteLang'); } catch(e){}
+  var lang = saved || (/^fr\b/i.test(navigator.language || 'fr') ? 'fr' : 'en');
+  document.querySelectorAll('.lang button').forEach(function(b){ b.addEventListener('click', function(){ setLang(b.dataset.lang); }); });
+
+  /* ----- Menu sur mobile ----- */
+  var mb = document.querySelector('.menu-btn'), nav = document.getElementById('nav');
+  mb.addEventListener('click', function(){ var o = nav.classList.toggle('open'); mb.setAttribute('aria-expanded', o); });
+  nav.addEventListener('click', function(e){ if (e.target.closest('a')) { nav.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); } });
+
+  /* ----- Numéro de version lu dans le README de l'application ----- */
+  var version = '';
+  function showVer(){ var v = document.getElementById('ver'); v.textContent = version ? (document.documentElement.lang === 'en' ? ' · Version ' : ' · Version ') + version : ''; }
+  fetch('/copo/README.md').then(function(r){ return r.ok ? r.text() : ''; }).then(function(t){
+    var m = /Version\s+([\d.]+)/.exec(t); if (m) { version = m[1]; showVer(); }
+  }).catch(function(){});
+
+  setLang(lang);
+
+  /* ----- Logo animé : rail bleu tracé, puis la fraise grave chaque lettre ----- */
+  var svg = document.getElementById('mark');
+  var NS = 'http://www.w3.org/2000/svg';
+  var rail = document.getElementById('rail'), tool = document.getElementById('tool');
+  var src = Array.prototype.slice.call(document.querySelectorAll('#letters path'));
+  var cuts = src.map(function(p){
+    p.setAttribute('class', 'path');
+    var c = document.createElementNS(NS, 'path');
+    c.setAttribute('d', p.getAttribute('d')); c.setAttribute('class', 'cut');
+    p.parentNode.insertBefore(c, p);
+    return c;
+  });
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { tool.style.display = 'none'; src.forEach(function(p){ p.classList.add('done'); }); return; }
+
+  var railLen = rail.getTotalLength();
+  var lens = cuts.map(function(c){ return c.getTotalLength(); });
+  function dash(el, len, done){ el.style.strokeDasharray = len + ' ' + len; el.style.strokeDashoffset = len * (1 - done); }
+  dash(rail, railLen, 0);
+  src.forEach(function(p, i){ dash(p, lens[i], 0); });
+  cuts.forEach(function(c, i){ dash(c, lens[i], 0); });
+
+  /* Durées (ms) : rail, puis parcours bleus de toutes les lettres, puis gravure lettre par lettre */
+  var T_RAIL = 700, T_PATH = 900, SPEED = 0.42 /* px par ms pour la fraise */, GAP = 140;
+  var plan = [], t = 0;
+  plan.push({ el: rail, len: railLen, start: t, dur: T_RAIL }); t += T_RAIL;
+  src.forEach(function(p, i){ plan.push({ el: p, len: lens[i], start: t + i * 120, dur: T_PATH }); });
+  t += T_PATH + 3 * 120 + 150;
+  var moves = [];
+  cuts.forEach(function(c, i){ var d = lens[i] / SPEED; moves.push({ el: c, src: src[i], len: lens[i], start: t, dur: d }); t += d + GAP; });
+  var END = t;
+
+  function ease(x){ return x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
+  var t0 = null;
+  function frame(now){
+    if (t0 === null) t0 = now;
+    var e = now - t0;
+    plan.forEach(function(s){ var k = Math.min(1, Math.max(0, (e - s.start) / s.dur)); dash(s.el, s.len, ease(k)); });
+    var active = null;
+    moves.forEach(function(m){
+      var k = Math.min(1, Math.max(0, (e - m.start) / m.dur));
+      dash(m.el, m.len, k);
+      if (k >= 1) m.src.classList.add('done');
+      if (k > 0 && k < 1) active = { m: m, k: k };
+    });
+    if (active) {
+      var pt = active.m.el.getPointAtLength(active.m.len * active.k);
+      tool.setAttribute('cx', pt.x); tool.setAttribute('cy', pt.y); tool.style.opacity = 1;
+    } else tool.style.opacity = 0;
+    if (e < END + 50) requestAnimationFrame(frame);
+    else { tool.style.display = 'none'; }
+  }
+  /* Lancer quand le logo est visible */
+  requestAnimationFrame(function(){ setTimeout(function(){ requestAnimationFrame(frame); }, 250); });
+})();
+</script>
+</body>
+</html>
