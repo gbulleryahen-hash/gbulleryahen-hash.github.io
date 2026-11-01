@@ -410,6 +410,7 @@ footer a:hover{color:var(--ink);text-decoration:underline}
     <div>
       <h4 data-en="Site">Site</h4>
       <ul>
+        <li><a class="mail" href="mentions-legales.html#contact" data-u="contact" data-d="copo-cnc.fr">Contact</a></li>
         <li><a href="mentions-legales.html" data-en="Legal notice">Mentions légales</a></li>
         <li><a href="#soutenir" data-en="Support COPO">Soutenir COPO</a></li>
       </ul>
@@ -420,6 +421,11 @@ footer a:hover{color:var(--ink);text-decoration:underline}
 
 <script>
 (function(){
+  /* ----- Adresse e-mail assemblée dans le navigateur (moins lisible pour les robots de spam) ----- */
+  document.querySelectorAll('a.mail').forEach(function(a){
+    var m = a.dataset.u + '@' + a.dataset.d; a.href = 'mailto:' + m; a.textContent = m;
+  });
+
   /* ----- Langue FR / EN (texte français dans la page, anglais dans data-en) ----- */
   var nodes = document.querySelectorAll('[data-en]');
   nodes.forEach(function(n){ n.dataset.fr = n.innerHTML; });

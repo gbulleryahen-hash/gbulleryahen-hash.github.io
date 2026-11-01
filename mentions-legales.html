@@ -26,7 +26,7 @@ p,address{margin:0 0 10px;color:#d6d6d6;font-style:normal}
 
   <h2>Éditeur du site</h2>
   <p>Le site copo-cnc.fr est édité à titre non professionnel par G. Bulleryahen, auteur du logiciel COPO.</p>
-  <p>Contact : par l'intermédiaire du <a href="https://github.com/gbulleryahen-hash/copo/issues">suivi des demandes du projet sur GitHub</a>.</p>
+  <p id="contact">Contact : <a class="mail" data-u="contact" data-d="copo-cnc.fr" href="#contact">contact [arobase] copo-cnc.fr</a>. Pour signaler un bug, vous pouvez aussi utiliser le <a href="https://github.com/gbulleryahen-hash/copo/issues">suivi des demandes du projet sur GitHub</a>.</p>
   <p>Directeur de la publication : G. Bulleryahen.</p>
 
   <h2>Hébergement</h2>
@@ -44,5 +44,8 @@ p,address{margin:0 0 10px;color:#d6d6d6;font-style:normal}
   <h2>Responsabilité</h2>
   <p>COPO est fourni sans aucune garantie. Vérifiez toujours le G-code par un passage à vide avant d'usiner.</p>
 </main>
+<script>
+document.querySelectorAll('a.mail').forEach(function(a){ var m = a.dataset.u + '@' + a.dataset.d; a.href = 'mailto:' + m; a.textContent = m; });
+</script>
 </body>
 </html>
