@@ -81,9 +81,29 @@ p{margin:0}
 .btn-ghost{border-color:#5a5a5a;color:var(--ink);background:var(--panel)}
 .btn-ghost:hover{border-color:var(--cote);color:#fff}
 .meta{margin-top:14px;color:var(--muted);font-size:14.5px}
-.shot{margin:52px auto 0;max-width:1040px;position:relative}
-.shot img{width:100%;height:auto;border-radius:10px 10px 0 0;border:1px solid #4a4a4a;border-bottom:0;box-shadow:0 -1px 0 #555 inset,0 30px 80px -20px rgb(0 0 0 / .7)}
-.shot figcaption{position:absolute;left:0;right:0;bottom:-34px;font-size:14px;color:var(--muted)}
+/* Diaporama : onglets nommés (comme les onglets de l'application), légende, captures en fondu */
+.chips{display:flex;gap:2px;margin:48px auto 0;max-width:1040px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.chips::-webkit-scrollbar{display:none}
+.chips button:first-child{margin-left:auto}
+.chips button:last-child{margin-right:auto}
+.chips button{position:relative;flex:none;background:none;border:0;color:var(--muted);font:600 15.5px var(--f-ui);padding:8px 12px 12px;cursor:pointer;white-space:nowrap;border-radius:var(--r)}
+.chips button:hover{color:var(--ink)}
+.chips button[aria-selected="true"]{color:#fff}
+.chips i{position:absolute;left:12px;right:12px;bottom:4px;height:2px;border-radius:1px;background:#4a4a4a;overflow:hidden;opacity:0}
+.chips button[aria-selected="true"] i{opacity:1}
+.chips i::after{content:"";position:absolute;inset:0;background:var(--accent);transform-origin:left;transform:scaleX(var(--p,1))}
+.cap{margin:6px auto 0;color:#cfcfcf;font-size:16.5px;min-height:1.55em;max-width:60ch}
+.shot{margin:20px auto 0;max-width:1040px}
+.frame{position:relative;aspect-ratio:1800/1125;border-radius:10px 10px 0 0;border:1px solid #4a4a4a;border-bottom:0;overflow:hidden;background:#323232;box-shadow:0 30px 80px -20px rgb(0 0 0 / .7);touch-action:pan-y}
+.frame img{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .7s ease;user-select:none;-webkit-user-drag:none}
+.frame img.on{opacity:1}
+.arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid #5a5a5a;background:rgb(38 38 38 / .82);color:#fff;display:grid;place-items:center;cursor:pointer;opacity:0;transition:opacity .2s}
+.arrow svg{width:20px;height:20px}
+.frame:hover .arrow,.arrow:focus-visible{opacity:1}
+.prev{left:14px}
+.next{right:14px}
+@media (hover:none){.arrow{opacity:.85;width:36px;height:36px}}
+@media (prefers-reduced-motion:reduce){.frame img{transition:none}}
 
 /* Bande « matière » : le panneau de bois sur lequel tout repose */
 .slab{height:14px;background:linear-gradient(var(--matiere-hi),var(--matiere));border-top:1px solid #f0a060}
@@ -161,7 +181,8 @@ footer a:hover{color:var(--ink);text-decoration:underline}
   section{padding:64px 0}
   .grid4,.inst,.duo{grid-template-columns:1fr}
   .grid4 article,.grid4 article + article{border-left:0;padding-left:0;margin-right:0}
-  .shot figcaption{position:static;margin-top:10px}
+  .chips button{font-size:15px;padding:8px 10px 12px}
+  .cap{font-size:15.5px;padding:0 4px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
@@ -226,11 +247,33 @@ footer a:hover{color:var(--ink);text-decoration:underline}
       </div>
       <p class="meta"><span data-en="Free · GPL v3 licence · French and English">Gratuit · Licence GPL v3 · Français et anglais</span><span id="ver"></span></p>
 
+      <div class="show" id="show" role="region" aria-roledescription="carrousel" aria-label="Aperçus de COPO">
+      <div class="chips" role="tablist" aria-label="Facettes de COPO">
+        <button type="button" role="tab" id="tb0" aria-controls="sl0" aria-selected="true" tabindex="0" data-en="Drawing&lt;i&gt;&lt;/i&gt;">Dessin<i></i></button>
+        <button type="button" role="tab" id="tb1" aria-controls="sl1" aria-selected="false" tabindex="-1" data-en="Text&lt;i&gt;&lt;/i&gt;">Texte<i></i></button>
+        <button type="button" role="tab" id="tb2" aria-controls="sl2" aria-selected="false" tabindex="-1" data-en="Toolpaths&lt;i&gt;&lt;/i&gt;">Parcours<i></i></button>
+        <button type="button" role="tab" id="tb3" aria-controls="sl3" aria-selected="false" tabindex="-1" data-en="Relief&lt;i&gt;&lt;/i&gt;">Relief<i></i></button>
+        <button type="button" role="tab" id="tb4" aria-controls="sl4" aria-selected="false" tabindex="-1" data-en="3D machining&lt;i&gt;&lt;/i&gt;">Usinage 3D<i></i></button>
+        <button type="button" role="tab" id="tb5" aria-controls="sl5" aria-selected="false" tabindex="-1" data-en="Nesting&lt;i&gt;&lt;/i&gt;">Imbrication<i></i></button>
+        <button type="button" role="tab" id="tb6" aria-controls="sl6" aria-selected="false" tabindex="-1" data-en="Lutherie&lt;i&gt;&lt;/i&gt;">Lutherie<i></i></button>
+        <button type="button" role="tab" id="tb7" aria-controls="sl7" aria-selected="false" tabindex="-1" data-en="G-code&lt;i&gt;&lt;/i&gt;">G-code<i></i></button>
+      </div>
+      <p class="cap" id="cap" aria-live="polite">Dessinez en 2D, la vue 3D suit en direct.</p>
       <figure class="shot">
-        <img src="/copo/img/fr-14-relief-3d.webp" data-src-en="/copo/img/en-14-relief-3d.webp" width="1800" height="1125"
-             alt="L'interface de COPO : onglet Relief avec un dôme, une extrusion et un lissage en vue 3D"
-             data-en-alt="COPO's interface: Relief tab with a dome, an extrusion and a sweep in 3D view">
+        <div class="frame" id="frame">
+          <img id="sl0" role="tabpanel" aria-labelledby="tb0" class="on" src="/copo/img/fr-01-interface.webp" data-src-en="/copo/img/en-01-interface.webp" width="1800" height="1125" alt="Dessinez en 2D, la vue 3D suit en direct." data-en-alt="Draw in 2D while the 3D view follows live." data-cap="Dessinez en 2D, la vue 3D suit en direct." data-cap-en="Draw in 2D while the 3D view follows live.">
+          <img id="sl1" role="tabpanel" aria-labelledby="tb1" class="" src="/copo/img/fr-08-texte.webp" data-src-en="/copo/img/en-08-texte.webp" width="1800" height="1125" loading="lazy" alt="Texte droit ou sur une courbe, avec une soixantaine de polices à trait unique." data-en-alt="Straight text or text on a curve, with about sixty single-line fonts." data-cap="Texte droit ou sur une courbe, avec une soixantaine de polices à trait unique." data-cap-en="Straight text or text on a curve, with about sixty single-line fonts.">
+          <img id="sl2" role="tabpanel" aria-labelledby="tb2" class="" src="/copo/img/fr-03-parcours.webp" data-src-en="/copo/img/en-03-parcours.webp" width="1800" height="1125" loading="lazy" alt="Profils, poches, V-carving, perçages : chaque parcours se règle en quelques champs." data-en-alt="Profiles, pockets, V-carving, drilling: each toolpath is set up in a few fields." data-cap="Profils, poches, V-carving, perçages : chaque parcours se règle en quelques champs." data-cap-en="Profiles, pockets, V-carving, drilling: each toolpath is set up in a few fields.">
+          <img id="sl3" role="tabpanel" aria-labelledby="tb3" class="" src="/copo/img/fr-14-relief-3d.webp" data-src-en="/copo/img/en-14-relief-3d.webp" width="1800" height="1125" loading="lazy" alt="Modelez un relief : dôme, extrusion, lissage, cartes de hauteur et modèles STL." data-en-alt="Sculpt a relief: dome, extrusion, sweep, heightmaps and STL models." data-cap="Modelez un relief : dôme, extrusion, lissage, cartes de hauteur et modèles STL." data-cap-en="Sculpt a relief: dome, extrusion, sweep, heightmaps and STL models.">
+          <img id="sl4" role="tabpanel" aria-labelledby="tb4" class="" src="/copo/img/fr-15-relief-parcours.webp" data-src-en="/copo/img/en-15-relief-parcours.webp" width="1800" height="1125" loading="lazy" alt="Ébauche et finition du relief, limitées aux zones que vous choisissez." data-en-alt="Roughing and finishing of the relief, limited to the areas you choose." data-cap="Ébauche et finition du relief, limitées aux zones que vous choisissez." data-cap-en="Roughing and finishing of the relief, limited to the areas you choose.">
+          <img id="sl5" role="tabpanel" aria-labelledby="tb5" class="" src="/copo/img/fr-07-imbrication.webp" data-src-en="/copo/img/en-07-imbrication.webp" width="1800" height="1125" loading="lazy" alt="Placez automatiquement vos pièces sur le panneau." data-en-alt="Nest your parts on the sheet automatically." data-cap="Placez automatiquement vos pièces sur le panneau." data-cap-en="Nest your parts on the sheet automatically.">
+          <img id="sl6" role="tabpanel" aria-labelledby="tb6" class="" src="/copo/img/fr-11-touche.webp" data-src-en="/copo/img/en-11-touche.webp" width="1800" height="1125" loading="lazy" alt="Générateur de touche de guitare : diapason, frettes, repères." data-en-alt="Guitar fretboard generator: scale length, frets, markers." data-cap="Générateur de touche de guitare : diapason, frettes, repères." data-cap-en="Guitar fretboard generator: scale length, frets, markers.">
+          <img id="sl7" role="tabpanel" aria-labelledby="tb7" class="" src="/copo/img/fr-05-gcode.webp" data-src-en="/copo/img/en-05-gcode.webp" width="1800" height="1125" loading="lazy" alt="Le G-code de votre machine, prêt à envoyer, avec la fiche de gamme imprimable." data-en-alt="G-code for your machine, ready to send, with a printable setup sheet." data-cap="Le G-code de votre machine, prêt à envoyer, avec la fiche de gamme imprimable." data-cap-en="G-code for your machine, ready to send, with a printable setup sheet.">
+          <button type="button" class="arrow prev" aria-label="Capture précédente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" class="arrow next" aria-label="Capture suivante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
       </figure>
+      </div>
     </div>
   </div>
   <div class="slab" aria-hidden="true"></div>
@@ -389,6 +432,7 @@ footer a:hover{color:var(--ink);text-decoration:underline}
     document.querySelectorAll('.lang button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.lang === l); });
     document.title = l === 'en' ? 'COPO — free CAM for CNC routers' : 'COPO — FAO libre pour fraiseuses CNC';
     showVer();
+    if (window.copoCap) window.copoCap();
     try { localStorage.setItem('copo.siteLang', l); } catch(e){}
   }
   var saved = null;
@@ -407,6 +451,51 @@ footer a:hover{color:var(--ink);text-decoration:underline}
   fetch('/copo/README.md').then(function(r){ return r.ok ? r.text() : ''; }).then(function(t){
     var m = /Version\s+([\d.]+)/.exec(t); if (m) { version = m[1]; showVer(); }
   }).catch(function(){});
+
+  /* ----- Diaporama des captures ----- */
+  var show = document.getElementById('show'), frameEl = document.getElementById('frame'), capEl = document.getElementById('cap');
+  var tabs = Array.prototype.slice.call(show.querySelectorAll('[role="tab"]'));
+  var slides = Array.prototype.slice.call(frameEl.querySelectorAll('img'));
+  var cur = 0, elapsed = 0, DUR = 6000, hover = false, focusIn = false, last = null;
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function capText(){ var im = slides[cur]; return document.documentElement.lang === 'en' ? im.dataset.capEn : im.dataset.cap; }
+  window.copoCap = function(){ capEl.textContent = capText(); };
+  function bar(p){ tabs.forEach(function(t, i){ var b = t.querySelector('i'); if (b) b.style.setProperty('--p', i === cur ? (still ? 1 : p) : 0); }); }
+  function go(n, fromKey){
+    cur = (n + slides.length) % slides.length; elapsed = 0;
+    slides.forEach(function(im, i){ im.classList.toggle('on', i === cur); if (i === (cur + 1) % slides.length) im.loading = 'eager'; });
+    tabs.forEach(function(t, i){ t.setAttribute('aria-selected', i === cur); t.tabIndex = i === cur ? 0 : -1; });
+    if (fromKey) tabs[cur].focus();
+    tabs[cur].scrollIntoView({ block: 'nearest', inline: 'center', behavior: still ? 'auto' : 'smooth' });
+    window.copoCap(); bar(0);
+  }
+  tabs.forEach(function(t, i){ t.addEventListener('click', function(){ go(i); }); });
+  show.querySelector('[role="tablist"]').addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') { go(cur + 1, true); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { go(cur - 1, true); e.preventDefault(); }
+    else if (e.key === 'Home') { go(0, true); e.preventDefault(); }
+    else if (e.key === 'End') { go(slides.length - 1, true); e.preventDefault(); }
+  });
+  show.querySelector('.prev').addEventListener('click', function(){ go(cur - 1); });
+  show.querySelector('.next').addEventListener('click', function(){ go(cur + 1); });
+  frameEl.addEventListener('mouseenter', function(){ hover = true; });
+  frameEl.addEventListener('mouseleave', function(){ hover = false; });
+  show.addEventListener('focusin', function(){ focusIn = true; });
+  show.addEventListener('focusout', function(e){ if (!show.contains(e.relatedTarget)) focusIn = false; });
+  /* Glisser du doigt sur la capture */
+  var x0 = null;
+  frameEl.addEventListener('pointerdown', function(e){ if (!e.target.closest(".arrow")) x0 = e.clientX; });
+  frameEl.addEventListener('pointerup', function(e){ if (x0 === null) return; var dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1)); });
+  frameEl.addEventListener('pointercancel', function(){ x0 = null; });
+  /* Défilement automatique, en pause au survol, au clavier, onglet caché ou mouvement réduit */
+  function tick(now){
+    if (last !== null && !still && !hover && !focusIn && !document.hidden) {
+      elapsed += Math.min(100, now - last);
+      if (elapsed >= DUR) go(cur + 1); else bar(elapsed / DUR);
+    }
+    last = now; requestAnimationFrame(tick);
+  }
+  bar(0); requestAnimationFrame(tick);
 
   setLang(lang);
 
