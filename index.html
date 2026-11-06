@@ -166,6 +166,53 @@ footer a{color:var(--muted);text-decoration:none}
 footer a:hover{color:var(--ink);text-decoration:underline}
 .legal{flex-basis:100%;border-top:1px solid #383838;padding-top:20px;font-size:14px}
 
+
+/* ---------- Réalisations : une pièce en trois étapes ---------- */
+.real-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap}
+.real{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);gap:36px;margin-top:40px;align-items:start}
+.stage{position:relative;aspect-ratio:1.7;border-radius:var(--r);overflow:hidden;background:#1d1d1d;border:1px solid #444}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .45s ease}
+.stage img.on{opacity:1}
+.stage img.photo{object-fit:cover}
+.proj h3{font-size:30px}
+.proj .what{color:var(--muted);font-size:15.5px;margin:6px 0 22px}
+.steps{list-style:none;margin:0;padding:0;border-left:2px solid var(--line)}
+.steps button{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;width:100%;text-align:left;background:none;border:0;color:var(--muted);font:inherit;padding:10px 0 10px 16px;margin-left:-2px;border-left:2px solid transparent;cursor:pointer}
+.steps button:hover{color:var(--ink)}
+.steps button[aria-pressed="true"]{color:var(--ink);border-left-color:var(--matiere-hi)}
+.steps img{width:76px;height:46px;object-fit:cover;border-radius:4px;border:1px solid #4a4a4a;opacity:.7}
+.steps button[aria-pressed="true"] img{opacity:1;border-color:#777}
+.steps b{display:block;font:600 19px/1.15 var(--f-cond)}
+.steps small{display:block;font-size:14.5px;line-height:1.35;margin-top:2px}
+.proj .note{margin-top:22px;font-size:15.5px;color:#cfcfcf}
+.yours{margin-top:44px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px dashed #555;border-radius:var(--r);padding:18px 22px}
+.yours p{color:#cfcfcf;max-width:62ch}
+
+/* ---------- Vidéos ---------- */
+.vids{background:var(--panel)}
+.vgrid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);gap:36px;margin-top:40px;align-items:start}
+.player{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:#1d1d1d;border:1px solid #444}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.facade{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:radial-gradient(120% 90% at 30% 20%,#3a3a3a,#1d1d1d);cursor:pointer;color:#fff}
+.facade img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.facade .play{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:var(--accent);display:grid;place-items:center;box-shadow:0 10px 30px rgb(0 0 0 / .5);transition:transform .15s}
+.facade:hover .play{transform:scale(1.07);background:var(--accent-hi)}
+.facade .play svg{width:30px;height:30px;margin-left:5px}
+.facade .ttl{position:absolute;left:0;right:0;bottom:0;padding:40px 20px 16px;text-align:left;font:600 19px/1.25 var(--f-ui);background:linear-gradient(transparent,rgb(0 0 0 / .75))}
+.vfine{margin-top:10px;font-size:14px;color:var(--muted)}
+.vlist{list-style:none;margin:0;padding:0}
+.vlist li + li{margin-top:12px}
+.vitem{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;color:var(--ink);font:inherit;cursor:pointer}
+.vitem[aria-current="true"]{border-color:var(--accent)}
+.vitem b{display:block;font:600 21px/1.15 var(--f-cond)}
+.vitem .by{display:block;color:var(--muted);font-size:14.5px;margin-top:4px}
+.vitem .d{display:block;color:#cfcfcf;font-size:15.5px;margin-top:8px}
+.tag{display:inline-block;font-size:13px;font-weight:600;color:#fff;background:#3b3b3b;border-radius:4px;padding:1px 7px;margin-right:6px}
+.soon{border:1px dashed #555;border-radius:var(--r);padding:16px 18px;color:var(--muted);font-size:15.5px}
+.yt{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:600}
+
+@media (max-width:960px){ .real,.vgrid{grid-template-columns:1fr;gap:24px} }
+
 /* ---------- Écrans étroits ---------- */
 @media (max-width:960px){
   .grid4,.inst{grid-template-columns:1fr 1fr}
@@ -203,6 +250,8 @@ footer a:hover{color:var(--ink);text-decoration:underline}
     </button>
     <nav class="nav" id="nav">
       <a href="/copo/" data-en="Web app">Application</a>
+      <a href="#realisations" data-en="Projects">Réalisations</a>
+      <a href="#videos" data-en="Videos">Vidéos</a>
       <a href="#installer" data-en="Install">Installer</a>
       <a href="/copo/guide.html" data-en="User guide">Mode d'emploi</a>
       <a href="#soutenir" data-en="Support">Soutenir</a>
@@ -322,6 +371,64 @@ footer a:hover{color:var(--ink);text-decoration:underline}
     </div>
   </section>
 
+  <section id="realisations">
+    <div class="wrap">
+      <div class="real-head">
+        <h2 data-en="Made with COPO">Réalisé avec COPO</h2>
+      </div>
+      <div class="real" id="real">
+        <div class="stage" id="stage">
+          <img class="on" src="img/realisations/klimt-1-dessin.webp" data-src-en="img/realisations/klimt-1-dessin.webp" width="772" height="451" alt="Plaque Klimt : le dessin dans COPO" data-en-alt="Klimt sign: the drawing in COPO">
+          <img src="img/realisations/klimt-2-simulation.webp" data-src-en="img/realisations/klimt-2-simulation.webp" width="1241" height="730" loading="lazy" alt="Plaque Klimt : la simulation d'usinage" data-en-alt="Klimt sign: the machining simulation">
+          <img class="photo" src="img/realisations/klimt-3-piece.webp" data-src-en="img/realisations/klimt-3-piece.webp" width="980" height="576" loading="lazy" alt="Plaque Klimt usinée en bois, gravure rehaussée d'argent" data-en-alt="The finished Klimt sign in wood, engraving highlighted in silver">
+        </div>
+        <div class="proj">
+          <h3 data-en="“Klimt” sign">Plaque « Klimt »</h3>
+          <p class="what" data-en="Wood · V-carving and 3D relief · silver highlights">Bois · V-carving et relief 3D · rehauts argent</p>
+          <ol class="steps" id="steps">
+            <li><button type="button" aria-pressed="true" data-i="0"><img src="img/realisations/klimt-1-dessin.webp" alt=""><span><b data-en="Drawing">Le dessin</b><small data-en="Lettering and ornaments, toolpaths ready.">Lettrage et ornements, parcours prêts.</small></span></button></li>
+            <li><button type="button" aria-pressed="false" data-i="1"><img src="img/realisations/klimt-2-simulation.webp" alt=""><span><b data-en="Simulation">La simulation</b><small data-en="The part as it will come out, before cutting.">La pièce telle qu'elle sortira, avant d'usiner.</small></span></button></li>
+            <li><button type="button" aria-pressed="false" data-i="2"><img src="img/realisations/klimt-3-piece.webp" alt=""><span><b data-en="The finished part">La pièce</b><small data-en="Cut, finished and fixed.">Usinée, finie et posée.</small></span></button></li>
+          </ol>
+        </div>
+      </div>
+      <div class="yours">
+        <p data-en="Made something with COPO? Send us a photo, ideally with the drawing and the simulation, and it may appear here.">Vous avez réalisé une pièce avec COPO ? Envoyez-nous une photo, si possible avec le dessin et la simulation : elle pourra figurer ici.</p>
+        <a class="btn btn-ghost mail" data-keep data-u="contact" data-d="copo-cnc.fr" href="mentions-legales.html#contact"><span data-en="Send my project">Envoyer ma réalisation</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="vids" id="videos">
+    <div class="wrap">
+      <h2 data-en="Learn with videos">Apprendre en vidéo</h2>
+      <div class="vgrid">
+        <div>
+          <div class="player" id="player">
+            <button type="button" class="facade" id="facade" aria-label="Lire la vidéo" data-yt="5k3X6NsQ2n8">
+              <img src="https://i.ytimg.com/vi/5k3X6NsQ2n8/hqdefault.jpg" alt="" onerror="this.remove()">
+              <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+              <span class="ttl" data-en="COPO walkthrough and beginner tutorial">Présentation de COPO et tutoriel pour débuter</span>
+            </button>
+          </div>
+          <p class="vfine" data-en="The video loads from YouTube when you click it.">La vidéo se charge depuis YouTube quand vous cliquez dessus.</p>
+        </div>
+        <div>
+          <ul class="vlist">
+            <li><button type="button" class="vitem" aria-current="true" data-yt="5k3X6NsQ2n8">
+              <span><span class="tag" data-en="Beginner">Débutant</span><span class="tag">FR</span></span>
+              <b data-en="COPO walkthrough and beginner tutorial">Présentation de COPO et tutoriel pour débuter</b>
+              <span class="by" data-en="by NOM DE LA CHAÎNE">par NOM DE LA CHAÎNE</span>
+              <span class="d" data-en="A tour of the interface, then a first project from drawing to G-code.">Tour de l'interface, puis un premier projet du dessin au G-code.</span>
+            </button></li>
+            <li class="soon" data-en="More videos are on the way. Made a COPO video? Let us know.">D'autres vidéos arrivent. Vous avez fait une vidéo sur COPO ? Faites-le-nous savoir.</li>
+          </ul>
+          <a class="yt" href="https://youtu.be/5k3X6NsQ2n8"><span data-en="Watch on YouTube">Voir sur YouTube</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="installer">
     <div class="wrap">
       <h2 data-en="Install COPO">Installer COPO</h2>
@@ -426,8 +533,37 @@ footer a:hover{color:var(--ink);text-decoration:underline}
 (function(){
   /* ----- Adresse e-mail assemblée dans le navigateur (moins lisible pour les robots de spam) ----- */
   document.querySelectorAll('a.mail').forEach(function(a){
-    var m = a.dataset.u + '@' + a.dataset.d; a.href = 'mailto:' + m; a.textContent = m;
+    var m = a.dataset.u + '@' + a.dataset.d; a.href = 'mailto:' + m; if (!a.hasAttribute('data-keep')) a.textContent = m;
   });
+
+  /* ----- Réalisations : changer d'étape ----- */
+  (function(){
+    var st = document.getElementById('stage'); if (!st) return;
+    var ims = st.querySelectorAll('img'), bts = document.querySelectorAll('#steps button');
+    bts.forEach(function(b){ b.addEventListener('click', function(){
+      var i = +b.dataset.i;
+      ims.forEach(function(im, k){ im.classList.toggle('on', k === i); });
+      bts.forEach(function(x, k){ x.setAttribute('aria-pressed', k === i); });
+    }); });
+  })();
+
+  /* ----- Vidéos : YouTube chargé seulement au clic (youtube-nocookie) ----- */
+  (function(){
+    var pl = document.getElementById('player'); if (!pl) return;
+    function play(id){
+      pl.innerHTML = '';
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+      f.title = 'Vidéo COPO'; f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true;
+      pl.appendChild(f);
+    }
+    var fa = document.getElementById('facade');
+    if (fa) fa.addEventListener('click', function(){ play(fa.dataset.yt); });
+    document.querySelectorAll('.vitem').forEach(function(b){ b.addEventListener('click', function(){
+      document.querySelectorAll('.vitem').forEach(function(x){ x.setAttribute('aria-current', x === b); });
+      play(b.dataset.yt);
+    }); });
+  })();
 
   /* ----- Langue FR / EN (texte français dans la page, anglais dans data-en) ----- */
   var nodes = document.querySelectorAll('[data-en]');
