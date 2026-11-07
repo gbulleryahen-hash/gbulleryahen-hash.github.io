@@ -169,6 +169,12 @@ footer a:hover{color:var(--ink);text-decoration:underline}
 
 /* ---------- Réalisations : une pièce en trois étapes ---------- */
 .real-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap}
+.picks{display:flex;gap:8px;flex-wrap:wrap}
+.pick{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:5px 12px 5px 5px;color:var(--muted);font:600 15px var(--f-ui);cursor:pointer}
+.pick img{width:52px;height:36px;object-fit:cover;border-radius:3px}
+.pick:hover{color:var(--ink)}
+.pick[aria-pressed="true"]{color:var(--ink);border-color:var(--matiere-hi)}
+.real[hidden]{display:none}
 .real{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);gap:36px;margin-top:40px;align-items:start}
 .stage{position:relative;aspect-ratio:1.7;border-radius:var(--r);overflow:hidden;background:#1d1d1d;border:1px solid #444}
 .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .45s ease}
@@ -375,20 +381,38 @@ footer a:hover{color:var(--ink);text-decoration:underline}
     <div class="wrap">
       <div class="real-head">
         <h2 data-en="Made with COPO">Réalisé avec COPO</h2>
+        <div class="picks" role="group" aria-label="Réalisations" data-en-label="Projects">
+          <button type="button" class="pick" aria-pressed="true" data-p="0"><img src="img/realisations/klimt-3-piece.webp" alt=""><span data-en="“Klimt” sign">Plaque « Klimt »</span></button>
+          <button type="button" class="pick" aria-pressed="false" data-p="1"><img src="img/realisations/chef-2-simulation.webp" alt=""><span data-en="Line-engraved portrait">Portrait gravé en lignes</span></button>
+        </div>
       </div>
-      <div class="real" id="real">
-        <div class="stage" id="stage">
+      <div class="real" data-p="0">
+        <div class="stage">
           <img class="on" src="img/realisations/klimt-1-dessin.webp" data-src-en="img/realisations/klimt-1-dessin.webp" width="772" height="451" alt="Plaque Klimt : le dessin dans COPO" data-en-alt="Klimt sign: the drawing in COPO">
-          <img src="img/realisations/klimt-2-simulation.webp" data-src-en="img/realisations/klimt-2-simulation.webp" width="1241" height="730" loading="lazy" alt="Plaque Klimt : la simulation d'usinage" data-en-alt="Klimt sign: the machining simulation">
-          <img class="photo" src="img/realisations/klimt-3-piece.webp" data-src-en="img/realisations/klimt-3-piece.webp" width="980" height="576" loading="lazy" alt="Plaque Klimt usinée en bois, gravure rehaussée d'argent" data-en-alt="The finished Klimt sign in wood, engraving highlighted in silver">
+          <img src="img/realisations/klimt-2-simulation.webp" data-src-en="img/realisations/klimt-2-simulation.webp" width="1241" height="730" loading="lazy" alt="Plaque Klimt : la simulation d&#x27;usinage" data-en-alt="Klimt sign: the machining simulation">
+          <img class="photo" src="img/realisations/klimt-3-piece.webp" data-src-en="img/realisations/klimt-3-piece.webp" width="980" height="576" loading="lazy" alt="Plaque Klimt usinée en bois, gravure rehaussée d&#x27;argent" data-en-alt="The finished Klimt sign in wood, engraving highlighted in silver">
         </div>
         <div class="proj">
           <h3 data-en="“Klimt” sign">Plaque « Klimt »</h3>
           <p class="what" data-en="Wood · V-carving and 3D relief · silver highlights">Bois · V-carving et relief 3D · rehauts argent</p>
-          <ol class="steps" id="steps">
+          <ol class="steps">
             <li><button type="button" aria-pressed="true" data-i="0"><img src="img/realisations/klimt-1-dessin.webp" alt=""><span><b data-en="Drawing">Le dessin</b><small data-en="Lettering and ornaments, toolpaths ready.">Lettrage et ornements, parcours prêts.</small></span></button></li>
             <li><button type="button" aria-pressed="false" data-i="1"><img src="img/realisations/klimt-2-simulation.webp" alt=""><span><b data-en="Simulation">La simulation</b><small data-en="The part as it will come out, before cutting.">La pièce telle qu'elle sortira, avant d'usiner.</small></span></button></li>
             <li><button type="button" aria-pressed="false" data-i="2"><img src="img/realisations/klimt-3-piece.webp" alt=""><span><b data-en="The finished part">La pièce</b><small data-en="Cut, finished and fixed.">Usinée, finie et posée.</small></span></button></li>
+          </ol>
+        </div>
+      </div>
+      <div class="real" hidden data-p="1">
+        <div class="stage">
+          <img class="on" src="img/realisations/chef-1-photo.webp" data-src-en="img/realisations/chef-1-photo.webp" width="700" height="846" loading="lazy" alt="Photo ancienne du portrait de départ" data-en-alt="The original old portrait photograph">
+          <img src="img/realisations/chef-2-simulation.webp" data-src-en="img/realisations/chef-2-simulation.webp" width="762" height="659" loading="lazy" alt="Simulation du portrait gravé en lignes parallèles" data-en-alt="Simulation of the portrait engraved in parallel lines">
+        </div>
+        <div class="proj">
+          <h3 data-en="Line-engraved portrait">Portrait gravé en lignes</h3>
+          <p class="what" data-en="Photo turned into a 1.25 mm relief · 45° line finishing with a 6 mm 60° V-bit, stepover equal to the relief height">Photo en relief de 1,25 mm · finition en lignes à 45° à la fraise en V 60° de 6 mm, pas latéral égal à la hauteur du relief</p>
+          <ol class="steps">
+            <li><button type="button" aria-pressed="true" data-i="0"><img src="img/realisations/chef-1-photo.webp" alt=""><span><b data-en="The photo">La photo</b><small data-en="An old photograph, imported as greyscale.">Une photo ancienne, importée en niveaux de gris.</small></span></button></li>
+            <li><button type="button" aria-pressed="false" data-i="1"><img src="img/realisations/chef-2-simulation.webp" alt=""><span><b data-en="Simulation">La simulation</b><small data-en="The V-bit cuts grooves of varying width: the picture emerges from the lines.">La fraise en V creuse des sillons plus ou moins larges : le dessin naît des lignes.</small></span></button></li>
           </ol>
         </div>
       </div>
@@ -536,14 +560,20 @@ footer a:hover{color:var(--ink);text-decoration:underline}
     var m = a.dataset.u + '@' + a.dataset.d; a.href = 'mailto:' + m; if (!a.hasAttribute('data-keep')) a.textContent = m;
   });
 
-  /* ----- Réalisations : changer d'étape ----- */
+  /* ----- Réalisations : choisir la pièce, puis l'étape ----- */
   (function(){
-    var st = document.getElementById('stage'); if (!st) return;
-    var ims = st.querySelectorAll('img'), bts = document.querySelectorAll('#steps button');
-    bts.forEach(function(b){ b.addEventListener('click', function(){
-      var i = +b.dataset.i;
-      ims.forEach(function(im, k){ im.classList.toggle('on', k === i); });
-      bts.forEach(function(x, k){ x.setAttribute('aria-pressed', k === i); });
+    var blocks = document.querySelectorAll('.real'), picks = document.querySelectorAll('.pick');
+    blocks.forEach(function(bl){
+      var ims = bl.querySelectorAll('.stage img'), bts = bl.querySelectorAll('.steps button');
+      bts.forEach(function(b){ b.addEventListener('click', function(){
+        var i = +b.dataset.i;
+        ims.forEach(function(im, k){ im.classList.toggle('on', k === i); });
+        bts.forEach(function(x, k){ x.setAttribute('aria-pressed', k === i); });
+      }); });
+    });
+    picks.forEach(function(pk){ pk.addEventListener('click', function(){
+      blocks.forEach(function(bl){ bl.hidden = bl.dataset.p !== pk.dataset.p; });
+      picks.forEach(function(x){ x.setAttribute('aria-pressed', x === pk); });
     }); });
   })();
 
