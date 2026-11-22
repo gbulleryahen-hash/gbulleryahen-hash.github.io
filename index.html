@@ -176,6 +176,20 @@ footer a:hover{color:var(--ink);text-decoration:underline}
 .pick:hover{color:var(--ink)}
 .pick[aria-pressed="true"]{color:var(--ink);border-color:var(--matiere-hi)}
 .real[hidden]{display:none}
+.spec{margin-top:20px;border-top:1px solid var(--line);padding-top:12px;font-size:15px}
+.spec summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.spec dl{display:grid;grid-template-columns:minmax(0,44%) 1fr;gap:6px 14px;margin:12px 0 10px}
+.spec dt{color:var(--muted)}
+.spec dd{margin:0;color:#dcdcdc}
+.spec p{color:#cfcfcf}
+.proj .dl{margin-top:18px;padding:9px 14px;font-size:15px}
+.thanks{padding:64px 0}
+.thanks h2{font-size:clamp(26px,3.2vw,34px)}
+.thanks ul{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:16px 56px}
+.thanks li b{display:block;font:700 26px/1.1 var(--f-cond)}
+.thanks li b a{color:var(--ink);text-decoration:none}
+.thanks li b a:hover{color:var(--cote)}
+.thanks li span{color:var(--muted);font-size:15.5px}
 .real{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);gap:36px;margin-top:40px;align-items:start}
 .stage{position:relative;aspect-ratio:1.7;border-radius:var(--r);overflow:hidden;background:#1d1d1d;border:1px solid #444}
 .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .45s ease}
@@ -385,6 +399,7 @@ footer a:hover{color:var(--ink);text-decoration:underline}
         <div class="picks" role="group" aria-label="Réalisations" data-en-label="Projects">
           <button type="button" class="pick" aria-pressed="true" data-p="0"><img src="img/realisations/klimt-3-piece.webp" alt=""><span data-en="“Klimt” sign">Plaque « Klimt »</span></button>
           <button type="button" class="pick" aria-pressed="false" data-p="1"><img src="img/realisations/chef-2-simulation.webp" alt=""><span data-en="Line-engraved portrait">Portrait gravé en lignes</span></button>
+          <button type="button" class="pick" aria-pressed="false" data-p="2"><img src="img/realisations/jean-thumb.webp" alt=""><span data-en="“C’est pas moi…” inlay">« C'est pas moi… »</span></button>
         </div>
       </div>
       <div class="real" data-p="0">
@@ -415,6 +430,40 @@ footer a:hover{color:var(--ink);text-decoration:underline}
             <li><button type="button" aria-pressed="true" data-i="0"><img src="img/realisations/chef-1-photo.webp" alt=""><span><b data-en="The photo">La photo</b><small data-en="An old photograph, imported as greyscale.">Une photo ancienne, importée en niveaux de gris.</small></span></button></li>
             <li><button type="button" aria-pressed="false" data-i="1"><img src="img/realisations/chef-2-simulation.webp" alt=""><span><b data-en="Simulation">La simulation</b><small data-en="The V-bit cuts grooves of varying width: the picture emerges from the lines.">La fraise en V creuse des sillons plus ou moins larges : le dessin naît des lignes.</small></span></button></li>
           </ol>
+        </div>
+      </div>
+      <div class="real" hidden data-p="2">
+        <div class="stage">
+          <img class="on" src="img/realisations/jean-1-dessin.webp" data-src-en="img/realisations/jean-1-dessin.webp" width="1024" height="548" loading="lazy" alt="Le projet « C'est pas moi » dans COPO" data-en-alt="The “C’est pas moi” project in COPO">
+          <img src="img/realisations/jean-2-simulation.webp" data-src-en="img/realisations/jean-2-simulation.webp" width="1024" height="548" loading="lazy" alt="Simulation de la femelle" data-en-alt="Simulation of the female part">
+          <img src="img/realisations/jean-3-male.webp" data-src-en="img/realisations/jean-3-male.webp" width="578" height="1024" loading="lazy" alt="Le mâle en hêtre, usiné en miroir" data-en-alt="The beech male, cut mirrored">
+          <img src="img/realisations/jean-4-pieces.webp" data-src-en="img/realisations/jean-4-pieces.webp" width="578" height="1024" loading="lazy" alt="Le mâle et la femelle bridés sur la table de la fraiseuse" data-en-alt="Male and female clamped on the machine bed">
+          <img src="img/realisations/jean-5-piece.webp" data-src-en="img/realisations/jean-5-piece.webp" width="768" height="988" loading="lazy" alt="L'incrustation terminée : chat en hêtre dans le garapa" data-en-alt="The finished inlay: a beech cat set in garapa">
+        </div>
+        <div class="proj">
+          <h3>« C'est pas moi… »</h3>
+          <p class="what" data-en="V-inlay · beech and garapa · made by Jean">Incrustation en V (inlay) · hêtre et garapa · réalisée par Jean</p>
+          <ol class="steps">
+            <li><button type="button" aria-pressed="true" data-i="0"><img src="img/realisations/jean-1-dessin.webp" alt=""><span><b data-en="Drawing">Le dessin</b><small data-en="The cat, the lettering and two sets of toolpaths: female and male.">Le chat, le texte et deux jeux de parcours : la femelle et le mâle.</small></span></button></li>
+            <li><button type="button" aria-pressed="false" data-i="1"><img src="img/realisations/jean-2-simulation.webp" alt=""><span><b data-en="Simulation">La simulation</b><small data-en="The female V-carved, checked before cutting.">La femelle creusée au V, vérifiée avant d'usiner.</small></span></button></li>
+            <li><button type="button" aria-pressed="false" data-i="2"><img src="img/realisations/jean-3-male.webp" alt=""><span><b data-en="The male">Le mâle</b><small data-en="The cat raised in beech, cut mirrored.">Le chat en relief dans le hêtre, usiné en miroir.</small></span></button></li>
+            <li><button type="button" aria-pressed="false" data-i="3"><img src="img/realisations/jean-4-pieces.webp" alt=""><span><b data-en="Both parts">Les deux pièces</b><small data-en="The beech male and the garapa female on the bed.">Le mâle en hêtre et la femelle en garapa, sur la table.</small></span></button></li>
+            <li><button type="button" aria-pressed="false" data-i="4"><img src="img/realisations/jean-5-piece.webp" alt=""><span><b data-en="The finished part">La pièce</b><small data-en="Glued, then planed: the beech shows through the garapa.">Collée puis rabotée : le hêtre apparaît dans le garapa.</small></span></button></li>
+          </ol>
+          <details class="spec">
+            <summary data-en="Technical details">Fiche technique</summary>
+            <dl>
+            <dt data-en="Size">Dimensions</dt><dd data-en="90 × 110 mm">90 × 110 mm</dd>
+            <dt data-en="Woods">Essences</dt><dd data-en="beech (male), garapa (female)">hêtre (mâle), garapa (femelle)</dd>
+            <dt data-en="Tools">Outils</dt><dd data-en="10° V-bit with 0.25 mm tip radius; 3 mm flat end mill">fraise en V à bout rond 10°, R 0,25 mm ; fraise cylindrique 3 mm</dd>
+            <dt data-en="Pocket depth">Profondeur de poche</dt><dd data-en="3 mm">3 mm</dd>
+            <dt data-en="Bottom clearance">Jeu au fond</dt><dd data-en="0.2 mm">0,2 mm</dd>
+            <dt data-en="Male height below the base">Hauteur du mâle sous le support</dt><dd data-en="4.6 mm">4,6 mm</dd>
+            <dt data-en="Base overhang">Débord du support</dt><dd data-en="8 mm">8 mm</dd>
+            </dl>
+            <p data-en="The male goes 2.80 mm deep, leaves 0.20 mm at the bottom and stands 1.80 mm proud before planing.">Le mâle s'enfonce de 2,80 mm, laisse 0,20 mm de jeu au fond et dépasse de 1,80 mm avant rabotage.</p>
+          </details>
+          <a class="btn btn-ghost dl" href="projets/cest-pas-moi-jean.copo" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-en="Download the COPO project">Télécharger le projet COPO</span></a>
         </div>
       </div>
       <div class="yours">
@@ -530,6 +579,16 @@ footer a:hover{color:var(--ink);text-decoration:underline}
           <li data-en="Share COPO with your woodworking friends.">Parlez de COPO autour de vous.</li>
         </ul>
       </div>
+    </div>
+  </section>
+  <section class="thanks" id="merci">
+    <div class="wrap">
+      <h2 data-en="Thank you">Merci</h2>
+      <ul>
+        <li><b><a href="https://www.youtube.com/@WoodfrogEvolution">Woodfrog Evolution</a></b><span data-en="for the COPO tutorial videos">pour les vidéos de tutoriel sur COPO</span></li>
+        <li><b>Pixel Lab</b><span data-en="for their monthly support on Ko-fi">pour son soutien mensuel sur Ko-fi</span></li>
+        <li><b>Jean</b><span data-en="for sharing his “C’est pas moi…” inlay project">pour le partage de son incrustation « C'est pas moi… »</span></li>
+      </ul>
     </div>
   </section>
 </main>
